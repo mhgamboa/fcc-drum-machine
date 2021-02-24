@@ -116,42 +116,34 @@ const bankTwo = [
   },
 ];
 
-class DrumButton extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-
-    const button='border-2 rounded'
-    return(
-      <button className="button">{this.props.keyTrigger}</button>
-    )
-  }
-}
-
 class DrumMachine extends React.Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     const style = {
-      h2: "text-2xl m-2",
-      buttonsContainer: "w-full",
-      button: ""
+      h2: "text-xl m-2",
+      buttonsContainer: "w-full m-2 grid grid-cols-3 gap-2 h-full",
+      button: "border-2 rounded",
     };
     return (
       <section className={this.props.style}>
         <h2 className={style.h2}>Press Button = Get Groovey</h2>
         <div className={style.buttonsContainer}>
+          {/* Map in the Buttons */}
           {bankOne.map((button) => (
-            <DrumButton key={button.keyCode} className="button" keyTrigger={button.keyTrigger}/>
+            <button
+              keynumber={button.keyNumber}
+              className={`button ${style.button}`}
+              key={button.keyCode}
+            >
+              {button.keyTrigger}
+            </button>
           ))}
+          {/* Map in the Audio Tracks */}
           {bankOne.map((button) => (
-            <audio 
-            key={button.url}
-            src={button.url}
-            keyCode={button.keyCode}
-            controls/>
+            <audio key={button.url} src={button.url} />
           ))}
         </div>
       </section>
@@ -175,10 +167,10 @@ class App extends React.Component {
   render() {
     const style = {
       base: "flex flex-col",
-      h1: "text-4xl w-full text-center m-2",
+      h1: "text-4xl w-full text-center my-2",
       main: "flex flex-wrap",
       mainSubSections:
-        "w-screen m-2 border-2 flex flex-col items-center rounded border-gray-400 p-2", //Style for DrumMachine & utilities
+        "w-screen m-2 border-2 flex flex-col items-center rounded border-gray-400 p-2 h-96", //Style for DrumMachine & utilities
     };
     return (
       <div className={style.base}>
