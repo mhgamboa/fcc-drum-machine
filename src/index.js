@@ -120,17 +120,31 @@ class DrumMachine extends React.Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.playSound = this.playSound.bind(this);
   }
+  playSound(audioElement) {
+    audioElement.currentTime = 0; //Rewind To The Start
+    audioElement.play();
+  }
+  handleKeyPress(e) {
+    let key = e.key.toUpperCase();
+    let audioElement = document.getElementById(`${key}`);
 
+    audioElement && this.playSound(audioElement);
+  }
   handleClick(e) {
     e.preventDefault();
-    let keyCode = e.target.dataset.keycode;
-    let audio = e.target.childNodes[1];
-    audio.currentTime = 0; //Rewind To The Start
-    audio.play();
+    let audioElement = e.target.childNodes[1];
+    this.playSound(audioElement);
+  }
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyPress);
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyPress);
   }
   render() {
-    const buttons = document.querySelectorAll(".button");
     const style = {
       h2: "text-xl m-2",
       buttonsContainer: "w-full m-2 grid grid-cols-3 gap-2 h-full",
@@ -175,6 +189,7 @@ class Utilities extends React.Component {
     return (
       <section className={this.props.style}>
         <h2>Hello</h2>
+        <div className="display"></div>
       </section>
     );
   }
@@ -182,16 +197,15 @@ class Utilities extends React.Component {
 class App extends React.Component {
   render() {
     const style = {
-      base: "flex flex-col",
+      base: "flex flex-col p-2",
       h1: "text-4xl w-full text-center my-2",
-      main: "flex flex-wrap",
-      mainSubSections:
-        "w-screen m-2 border-2 flex flex-col items-center rounded border-gray-400 p-2 h-96", //Style for DrumMachine & utilities
+      main: "flex flex-wrap border-2 rounded border-gray-400",
+      mainSubSections: "w-screen my-2 flex flex-col items-center p-2 h-96", //border-2 rounded border-gray-400
     };
     return (
       <div className={style.base} id="drum-machine">
         <h1 className={style.h1}>Drum Machine</h1>
-        <main className={style.main} id="display">
+        <main className={style.main}>
           <DrumMachine style={style.mainSubSections} />
           <Utilities style={style.mainSubSections} />
         </main>
