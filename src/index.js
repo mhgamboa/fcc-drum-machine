@@ -119,9 +119,18 @@ const bankTwo = [
 class DrumMachine extends React.Component {
   constructor(props) {
     super(props);
+    this.handleClick = this.handleClick.bind(this);
   }
 
+  handleClick(e) {
+    e.preventDefault();
+    let keyCode = e.target.dataset.keycode;
+    let audio = e.target.childNodes[1];
+    audio.currentTime = 0; //Rewind To The Start
+    audio.play();
+  }
   render() {
+    const buttons = document.querySelectorAll(".button");
     const style = {
       h2: "text-xl m-2",
       buttonsContainer: "w-full m-2 grid grid-cols-3 gap-2 h-full",
@@ -135,15 +144,22 @@ class DrumMachine extends React.Component {
           {bankOne.map((button) => (
             <button
               keynumber={button.keyNumber}
-              className={`button ${style.button}`}
+              className={`drum-pad ${style.button}`}
               key={button.keyCode}
+              data-keycode={button.keyCode}
+              onClick={this.handleClick}
+              id={button.keyCode}
             >
               {button.keyTrigger}
+              {/* Map in the Audio Tracks */}
+              <audio
+                key={button.url}
+                src={button.url}
+                data-keycode={button.keyCode}
+                className="clip"
+                id={button.keyTrigger}
+              />
             </button>
-          ))}
-          {/* Map in the Audio Tracks */}
-          {bankOne.map((button) => (
-            <audio key={button.url} src={button.url} />
           ))}
         </div>
       </section>
@@ -173,9 +189,9 @@ class App extends React.Component {
         "w-screen m-2 border-2 flex flex-col items-center rounded border-gray-400 p-2 h-96", //Style for DrumMachine & utilities
     };
     return (
-      <div className={style.base}>
+      <div className={style.base} id="drum-machine">
         <h1 className={style.h1}>Drum Machine</h1>
-        <main className={style.main}>
+        <main className={style.main} id="display">
           <DrumMachine style={style.mainSubSections} />
           <Utilities style={style.mainSubSections} />
         </main>
