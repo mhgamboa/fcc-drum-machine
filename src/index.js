@@ -116,6 +116,19 @@ const bankTwo = [
   },
 ];
 
+class DrumButton extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+
+    const button='border-2 rounded'
+    return(
+      <button className="button">{this.props.keyTrigger}</button>
+    )
+  }
+}
+
 class DrumMachine extends React.Component {
   constructor(props) {
     super(props);
@@ -123,14 +136,22 @@ class DrumMachine extends React.Component {
   render() {
     const style = {
       h2: "text-2xl m-2",
-      buttonsContainer: "",
+      buttonsContainer: "w-full",
+      button: ""
     };
     return (
       <section className={this.props.style}>
         <h2 className={style.h2}>Press Button = Get Groovey</h2>
         <div className={style.buttonsContainer}>
           {bankOne.map((button) => (
-            <button key={button.keyCode}>{button.keyTrigger}</button>
+            <DrumButton key={button.keyCode} className="button" keyTrigger={button.keyTrigger}/>
+          ))}
+          {bankOne.map((button) => (
+            <audio 
+            key={button.url}
+            src={button.url}
+            keyCode={button.keyCode}
+            controls/>
           ))}
         </div>
       </section>
