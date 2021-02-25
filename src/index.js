@@ -122,7 +122,17 @@ class DrumMachine extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.playSound = this.playSound.bind(this);
+    this.buttonHighlight = this.buttonHighlight.bind(this);
   }
+  buttonHighlight(audioElement) {
+    //Allows Button To Flash
+    audioElement.parentElement.classList.toggle("bg-red-500");
+    setTimeout(
+      () => audioElement.parentElement.classList.toggle("bg-red-500"),
+      150
+    );
+  }
+
   playSound(audioElement) {
     audioElement.currentTime = 0; //Rewind To The Start
     audioElement.play();
@@ -131,13 +141,18 @@ class DrumMachine extends React.Component {
     let key = e.key.toUpperCase();
     let audioElement = document.getElementById(`${key}`);
 
-    audioElement && this.playSound(audioElement);
-    audioElement && this.props.updateDisplay(audioElement.dataset.soundname);
+    if (audioElement) {
+      this.buttonHighlight(audioElement);
+      this.playSound(audioElement);
+      this.props.updateDisplay(audioElement.dataset.soundname);
+    }
   }
   handleClick(e) {
     e.preventDefault();
     let audioElement = e.target.childNodes[1];
     let soundName = audioElement.dataset.soundname;
+
+    this.buttonHighlight(audioElement);
     this.playSound(audioElement);
     this.props.updateDisplay(soundName);
   }
@@ -150,7 +165,8 @@ class DrumMachine extends React.Component {
   render() {
     const style = {
       buttonsContainer: "w-full m-2 grid grid-cols-3 gap-2 h-full",
-      button: "border-2 rounded",
+      button: "border-2 rounded transition-all duration-75",
+      buttonPressed: "bg-red-500",
     };
     return (
       <section className={this.props.style}>
@@ -194,7 +210,7 @@ class Utilities extends React.Component {
     return (
       <section className={this.props.style}>
         <h2 className={this.props.inheritedStyle.h2}>Utilities</h2>
-        <div className="display">{this.props.display}</div>
+        <div id="display">{this.props.display}</div>
       </section>
     );
   }
@@ -203,7 +219,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      display: "sup",
+      display: "Play A Sound",
     };
     this.updateDisplay = this.updateDisplay.bind(this);
   }
