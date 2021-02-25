@@ -132,11 +132,14 @@ class DrumMachine extends React.Component {
     let audioElement = document.getElementById(`${key}`);
 
     audioElement && this.playSound(audioElement);
+    audioElement && this.props.updateDisplay(audioElement.dataset.soundname);
   }
   handleClick(e) {
     e.preventDefault();
     let audioElement = e.target.childNodes[1];
+    let soundName = audioElement.dataset.soundname;
     this.playSound(audioElement);
+    this.props.updateDisplay(soundName);
   }
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyPress);
@@ -146,13 +149,14 @@ class DrumMachine extends React.Component {
   }
   render() {
     const style = {
-      h2: "text-xl m-2",
       buttonsContainer: "w-full m-2 grid grid-cols-3 gap-2 h-full",
       button: "border-2 rounded",
     };
     return (
       <section className={this.props.style}>
-        <h2 className={style.h2}>Press Button = Get Groovey</h2>
+        <h2 className={this.props.inheritedStyle.h2}>
+          Press Button = Get Groovey
+        </h2>
         <div className={style.buttonsContainer}>
           {/* Map in the Buttons */}
           {bankOne.map((button) => (
@@ -172,6 +176,7 @@ class DrumMachine extends React.Component {
                 data-keycode={button.keyCode}
                 className="clip"
                 id={button.keyTrigger}
+                data-soundname={button.id}
               />
             </button>
           ))}
@@ -188,26 +193,49 @@ class Utilities extends React.Component {
   render() {
     return (
       <section className={this.props.style}>
-        <h2>Hello</h2>
-        <div className="display"></div>
+        <h2 className={this.props.inheritedStyle.h2}>Utilities</h2>
+        <div className="display">{this.props.display}</div>
       </section>
     );
   }
 }
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      display: "sup",
+    };
+    this.updateDisplay = this.updateDisplay.bind(this);
+  }
+
+  updateDisplay(audioSoundName) {
+    this.setState({
+      display: audioSoundName,
+    });
+  }
   render() {
     const style = {
       base: "flex flex-col p-2",
       h1: "text-4xl w-full text-center my-2",
       main: "flex flex-wrap border-2 rounded border-gray-400",
-      mainSubSections: "w-screen my-2 flex flex-col items-center p-2 h-96", //border-2 rounded border-gray-400
+      mainSubSections:
+        "w-screen md:w-3/6 my-2 flex flex-col items-center p-2 h-96",
+      h2: "text-xl m-2 font-bold",
     };
     return (
       <div className={style.base} id="drum-machine">
         <h1 className={style.h1}>Drum Machine</h1>
         <main className={style.main}>
-          <DrumMachine style={style.mainSubSections} />
-          <Utilities style={style.mainSubSections} />
+          <DrumMachine
+            style={style.mainSubSections}
+            inheritedStyle={style}
+            updateDisplay={this.updateDisplay}
+          />
+          <Utilities
+            style={style.mainSubSections}
+            display={this.state.display}
+            inheritedStyle={style}
+          />
         </main>
       </div>
     );
