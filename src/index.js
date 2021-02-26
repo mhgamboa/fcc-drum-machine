@@ -141,20 +141,25 @@ class DrumMachine extends React.Component {
     let key = e.key.toUpperCase();
     let audioElement = document.getElementById(`${key}`);
 
-    if (audioElement) {
-      this.buttonHighlight(audioElement);
-      this.playSound(audioElement);
-      this.props.updateDisplay(audioElement.dataset.soundname);
+    if (this.props.playSound) {
+      if (audioElement) {
+        this.buttonHighlight(audioElement);
+        this.playSound(audioElement);
+        this.props.updateDisplay(audioElement.dataset.soundname);
+      }
     }
   }
   handleClick(e) {
     e.preventDefault();
+
     let audioElement = e.target.childNodes[1];
     let soundName = audioElement.dataset.soundname;
 
-    this.buttonHighlight(audioElement);
-    this.playSound(audioElement);
-    this.props.updateDisplay(soundName);
+    if (this.props.playSound) {
+      this.buttonHighlight(audioElement);
+      this.playSound(audioElement);
+      this.props.updateDisplay(soundName);
+    }
   }
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyPress);
@@ -165,7 +170,8 @@ class DrumMachine extends React.Component {
   render() {
     const style = {
       buttonsContainer: "w-full m-2 grid grid-cols-3 gap-2 h-full",
-      button: "border-2 rounded transition-all duration-75",
+      button:
+        "border-2 rounded transition-all duration-75 outline-none focus:outline-none",
       buttonPressed: "bg-red-500",
     };
     return (
@@ -210,6 +216,17 @@ class Utilities extends React.Component {
     return (
       <section className={this.props.style}>
         <h2 className={this.props.inheritedStyle.h2}>Utilities</h2>
+        <h3 className={this.props.inheritedStyle.h3}>Turn On/Off</h3>
+        <label for="myToggle" className="toggle">
+          <input
+            type="checkbox"
+            id="myToggle"
+            className="toggleInput"
+            checked={this.props.playSound}
+            onChange={this.props.toggleCheckbox}
+          />
+          <div className="toggleFill"></div>
+        </label>
         <div id="display">{this.props.display}</div>
       </section>
     );
@@ -220,8 +237,15 @@ class App extends React.Component {
     super(props);
     this.state = {
       display: "Play A Sound",
+      playSound: true,
     };
     this.updateDisplay = this.updateDisplay.bind(this);
+    this.toggleCheckbox = this.toggleCheckbox.bind(this);
+  }
+  toggleCheckbox() {
+    this.setState((state) => ({
+      playSound: !state.playSound,
+    }));
   }
 
   updateDisplay(audioSoundName) {
@@ -232,11 +256,12 @@ class App extends React.Component {
   render() {
     const style = {
       base: "flex flex-col p-2",
-      h1: "text-4xl w-full text-center my-2",
+      h1: "text-4xl w-full text-center mb-4 md:text-7xl",
       main: "flex flex-wrap border-2 rounded border-gray-400",
       mainSubSections:
         "w-screen md:w-3/6 my-2 flex flex-col items-center p-2 h-96",
-      h2: "text-xl m-2 font-bold",
+      h2: "text-xl md:text-2xl m-2 font-bold",
+      h3: "text-lg md:text-xl",
     };
     return (
       <div className={style.base} id="drum-machine">
@@ -246,11 +271,14 @@ class App extends React.Component {
             style={style.mainSubSections}
             inheritedStyle={style}
             updateDisplay={this.updateDisplay}
+            playSound={this.state.playSound}
           />
           <Utilities
             style={style.mainSubSections}
             display={this.state.display}
             inheritedStyle={style}
+            playSound={this.state.playSound}
+            toggleCheckbox={this.toggleCheckbox}
           />
         </main>
       </div>
