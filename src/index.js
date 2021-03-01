@@ -126,9 +126,10 @@ class DrumMachine extends React.Component {
   }
   buttonHighlight(audioElement) {
     //Allows Button To Flash
-    audioElement.parentElement.classList.toggle("bg-red-500");
+    let flashColor = "bg-gray-50";
+    audioElement.parentElement.classList.toggle(flashColor);
     setTimeout(
-      () => audioElement.parentElement.classList.toggle("bg-red-500"),
+      () => audioElement.parentElement.classList.toggle(flashColor),
       150
     );
   }
@@ -171,8 +172,7 @@ class DrumMachine extends React.Component {
     const style = {
       buttonsContainer: "w-full m-2 grid grid-cols-3 gap-2 h-full",
       button:
-        "border-2 rounded transition-all duration-75 outline-none focus:outline-none",
-      buttonPressed: "bg-red-500",
+        "border-yellow-500 border-2 rounded transition-all duration-75 outline-none focus:outline-none",
     };
     return (
       <section className={this.props.style}>
@@ -213,8 +213,12 @@ class Utilities extends React.Component {
     super(props);
   }
   render() {
+    let style = {
+      main: 'flex flex-col',
+      soundName: 'bg-white rounded p-3 w-48 text-center font-bold'
+    }
     return (
-      <section className={this.props.style}>
+      <section className={`${this.props.style}`}>
         <h2 className={this.props.inheritedStyle.h2}>Utilities</h2>
         <h3 className={this.props.inheritedStyle.h3}>Turn On/Off</h3>
         <label for="myToggle" className="toggle">
@@ -227,7 +231,7 @@ class Utilities extends React.Component {
           />
           <div className="toggleFill"></div>
         </label>
-        <div id="display">{this.props.display}</div>
+        <div id="display" className={style.soundName}>{this.props.display}</div>
       </section>
     );
   }
@@ -255,7 +259,7 @@ class App extends React.Component {
   }
   render() {
     const style = {
-      base: "flex flex-col p-2",
+      base: "min-h-screen	flex flex-col p-2 bg-gray-500",
       h1: "text-4xl w-full text-center mb-4 md:text-7xl",
       main: "flex flex-wrap border-2 rounded border-gray-400",
       mainSubSections:
